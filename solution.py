@@ -20,10 +20,6 @@ def find_org_code(uniName):
            code = data['data'][i]['code']
     return code
 
-def get_org_position_num(orgcode):
-    endpoint = "positions?organizationCode=" + str(orgcode)
-    data = main_request(baseurl, endpoint)
-    return len(data['data'])
 
 #function pou emfanizei tis monades (organizational-units) entws tou panepistimiou me vasi ton monadiko kwdiko tou organismou
 def get_organizational_units(orgcode):
@@ -34,6 +30,7 @@ def get_organizational_units(orgcode):
         units.append(data['data'][i]['preferredLabel'])
     return units
 
+#Function pou emfanizei poses Organic kai Temporary theseis ergasias yparxoun gia to etos 2023se ena panepistimio
 def get_position_type_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
@@ -49,6 +46,7 @@ def get_position_type_num(orgcode):
 
     return "Organic: " + str(oragnic) + "\n" + "Temporary: " + str(temporary)
 
+#Fuction pou epistrefei to plithos twn ergasiakwn sxesewn poy yparxoyn se ena panepistimio giato etos 2023
 def get_employmentType_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
@@ -66,6 +64,7 @@ def get_employmentType_num(orgcode):
                         empType10 += 1
     return "ΜOΝΙΜΟΙ ΥΠAΛΛΗΛΟΙ ΤΟΥ ΔΗΜΟΣIΟΥ /ΔΙΚΑΣΤΙΚΟI ΛΕΙΤΟΥΡΓΟI /ΔΗΜOΣΙΟΙ ΛΕΙΤΟΥΡΓΟI (employmentType 1): " + str(empType1) + "\n" + "ΙΔΙΩΤΙΚΟΥ ΔΙΚΑΙΟΥ ΑΟΡΙΣΤΟΥ ΧΡΟΝΟΥ(employmentType 3): " + str(empType3) + "\n" + "ΕΜΜΙΣΘΗ ΕΝΤΟΛΗ(employmentType 10): " + str(empType10)
 
+#function pou emfanizei tis theseis tou panepistimioy to 2023 me vasi thn kathgoria ekpaideusis
 def get_educationType_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
