@@ -20,12 +20,10 @@ def find_org_code(uniName):
            code = data['data'][i]['code']
     return code
 
-
 def get_org_position_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
     return len(data['data'])
-
 
 #function pou emfanizei tis monades (organizational-units) entws tou panepistimiou me vasi ton monadiko kwdiko tou organismou
 def get_organizational_units(orgcode):
@@ -36,70 +34,77 @@ def get_organizational_units(orgcode):
         units.append(data['data'][i]['preferredLabel'])
     return units
 
-
-def diakimansi_taktikou_prosopikou(orgcode):
+def get_position_type_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
-    posnum2019, posnum2020, posnum2021, posnum2022, posnum2023 = 0 ,0, 0, 0, 0
+    oragnic, temporary= 0, 0
 
     for i in range(len(data['data'])):
         if 'jobDescriptionVersionDate' in data['data'][i]:
             date = data['data'][i]['jobDescriptionVersionDate']
-            if str(date)[:4] == '2019' and data['data'][i]['type'] == 'Organic':
-                posnum2019 = posnum2019+1
-            elif str(date)[:4] == '2020' and data['data'][i]['type'] == 'Organic':
-                posnum2020 = posnum2020 + 1
-            elif str(date)[:4] == '2021' and data['data'][i]['type'] == 'Organic':
-                posnum2021 = posnum2021 + 1
-            elif str(date)[:4] == '2022' and data['data'][i]['type'] == 'Organic':
-                posnum2022 = posnum2022 + 1
-            elif str(date)[:4] == '2023' and data['data'][i]['type'] == 'Organic':
-                posnum2023 = posnum2023 + 1
+            if str(date)[:4] == '2023' and data['data'][i]['type'] == 'Organic':
+                oragnic +=1
+            elif str(date)[:4] == '2023' and data['data'][i]['type'] == 'Temporary':
+                temporary += 1
 
-    return '2019: ' + str(posnum2019) + '\n' + '2020: ' + str(posnum2019 + posnum2020) + '\n' + '2021: ' + str(posnum2019 + posnum2020+ posnum2021) + '\n' + '2022: ' + str(posnum2019 + posnum2020+ posnum2021 + posnum2022) + '\n' + '2023: ' + str(posnum2019 + posnum2020+ posnum2021 + posnum2022 + posnum2023)
+    return "Organic: " + str(oragnic) + "\n" + "Temporary: " + str(temporary)
 
-
-def diakimansi_proslipsewn_prosopikou(orgcode):
+def get_employmentType_num(orgcode):
     endpoint = "positions?organizationCode=" + str(orgcode)
     data = main_request(baseurl, endpoint)
-    posnum2019, posnum2020, posnum2021, posnum2022, posnum2023 = 0 ,0, 0, 0, 0
-
+    empType1, empType3,empType10 = 0, 0, 0
     for i in range(len(data['data'])):
-        if 'jobDescriptionVersionDate' in data['data'][i]:
+        if 'jobDescriptionVersionDate' in data['data'][i] and 'employmentType' in data['data'][i]:
             date = data['data'][i]['jobDescriptionVersionDate']
-            if str(date)[:4] == '2019':
-                posnum2019 = posnum2019+1
-            elif str(date)[:4] == '2020':
-                posnum2020 = posnum2020 + 1
-            elif str(date)[:4] == '2021':
-                posnum2021 = posnum2021 + 1
-            elif str(date)[:4] == '2022':
-                posnum2022 = posnum2022 + 1
-            elif str(date)[:4] == '2023':
-                posnum2023 = posnum2023 + 1
+            if str(date)[:4] == '2023':
+                match data['data'][i]['employmentType']:
+                    case 1:
+                        empType1 += 1
+                    case 3:
+                        empType3 += 1
+                    case 10:
+                        empType10 += 1
+    return "ΜOΝΙΜΟΙ ΥΠAΛΛΗΛΟΙ ΤΟΥ ΔΗΜΟΣIΟΥ /ΔΙΚΑΣΤΙΚΟI ΛΕΙΤΟΥΡΓΟI /ΔΗΜOΣΙΟΙ ΛΕΙΤΟΥΡΓΟI (employmentType 1): " + str(empType1) + "\n" + "ΙΔΙΩΤΙΚΟΥ ΔΙΚΑΙΟΥ ΑΟΡΙΣΤΟΥ ΧΡΟΝΟΥ(employmentType 3): " + str(empType3) + "\n" + "ΕΜΜΙΣΘΗ ΕΝΤΟΛΗ(employmentType 10): " + str(empType10)
 
-    return '2019: ' + str(posnum2019) + '\n' + '2020: ' + str(posnum2020) + '\n' + '2021: ' + str(posnum2021) + '\n' + '2022: ' + str(posnum2022) + '\n' + '2023: ' + str(posnum2023)
+def get_educationType_num(orgcode):
+    endpoint = "positions?organizationCode=" + str(orgcode)
+    data = main_request(baseurl, endpoint)
+    eduType1, eduType2, eduType3, eduType4, eduType5, eduType6, eduType7 = 0, 0, 0, 0, 0, 0, 0
+    for i in range(len(data['data'])):
+        if 'jobDescriptionVersionDate' in data['data'][i] and 'employmentType' in data['data'][i]:
+            date = data['data'][i]['jobDescriptionVersionDate']
+            if str(date)[:4] == '2023':
+                match data['data'][i]['educationType']:
+                    case 1:
+                        eduType1 += 1
+                    case 2:
+                        eduType2 += 1
+                    case 3:
+                        eduType3 += 1
+                    case 4:
+                        eduType4 += 1
+                    case 5:
+                        eduType5 += 1
+                    case 6:
+                        eduType6 += 1
+                    case 7:
+                        eduType7 += 1
+    return "ΑΝΕΥ ΚΑΤΗΓΟΡΙΑΣ ΕΚΠ/ΣΗΣ: " + str(eduType1) + "\n" + "ΠΕ: " + str(eduType2) + "\n" + "ΤΕ: " + str(eduType3) + "\n" + "ΔΕ: " + str(eduType4) + "\n" + "ΥΕ: " + str(eduType5) + "\n" + "ΕΙΔΙΚΩΝ ΘΕΣΕΩΝ: " + str(eduType6) + "\n" + "ΕΕΠ: " + str(eduType7)
 
 
 
-#1. Evresh kai ektypwsh kwdikou forea
+#1. Να εντοπίσετε τον κωδικό φορέα των Ιδρυμάτων που θα εστιάσετε.
 print("Κωδικός ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: " + find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ'))
 print("Κωδικός ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: " + find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ'))
 print("Κωδικός ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ: " + find_org_code('ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ'))
 
 print('--------------------------------------------------------------------------------------')
 
-#2. Diakimansi taktikou prosopikou
-print('Διακύμανση τακτικού προσωπικού ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: \n' + diakimansi_taktikou_prosopikou(find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ')))
-print('Διακύμανση τακτικού προσωπικού ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: \n' + diakimansi_taktikou_prosopikou(find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ')))
-print('Διακύμανση τακτικού προσωπικού ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ: \n' + diakimansi_taktikou_prosopikou(find_org_code('ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ')))
-
-print('--------------------------------------------------------------------------------------')
-
-#3. Diakimansi etisiwn proslipsewn
-print('Διακύμανση ετήσιων προσλήψεων ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: \n' + diakimansi_proslipsewn_prosopikou(find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ')))
-print('Διακύμανση ετήσιων προσλήψεων ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: \n' + diakimansi_proslipsewn_prosopikou(find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ')))
-print('Διακύμανση ετήσιων προσλήψεων ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ: \n' + diakimansi_proslipsewn_prosopikou(find_org_code('ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ')))
+#3. Για ένα μόνο ΑΕΙ, να μελετήσετε και να καταγράψετε τις θέσεις του για το έτος 2023 σύμφωνα με συγκεκριμένα κριτήρια (τύπος θέσης, εργασιακή σχέση, κατηγορία εκπαίδευσης, κλάδος, κτλ.)
+print("Θέσεις του Πανεπιστημίου Πατρών για το έτος 2023 σύμφωνα με συγκεκριμένα κριτήρια (τύπος θέσης, εργασιακή σχέση, κατηγορία εκπαίδευσης, κλάδος) \n")
+print("Τύποι θέσης: \n" + get_position_type_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
+print("Eργασιακή σχέση: \n" + get_employmentType_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
+print("Κατηγορία εκπαίδευσης: \n" + get_educationType_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
 
 
 
@@ -107,16 +112,8 @@ print('Διακύμανση ετήσιων προσλήψεων ΠΑΝΕΠΙΣΤ
 print('--------------------------------------------------------------------------------------')
 
 
-
-#Emfanisi synolikou arithmou thesewn toy kathe panepistimiou
-# print("Συνολικός αριθμός θέσεων ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: " + str(get_org_position_num(find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ'))))
-# print("Συνολικός αριθμός θέσεων ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: " + str(get_org_position_num(find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ'))))
-# print("Συνολικός αριθμός θέσεων ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ: " + str(get_org_position_num(find_org_code('ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ'))))
-#
-
-
-
-#5. Ελεύθερο ερώτημα emfanisi monadwn entos twn panepistimiwn
+#4. Ελεύθερο ερώτημα emfanisi monadwn entos twn panepistimiwn
+print("Ελεύθερο ερώτημα εμφάνιση μονάδων εντός των πανεπιστημίων \n")
 print("UNITS ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: " + str(get_organizational_units(find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ'))))
 print("UNITS ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: " + str(get_organizational_units(find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ'))))
 print("UNITS ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ: " + str(get_organizational_units(find_org_code('ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ'))))
