@@ -92,6 +92,23 @@ def get_educationType_num(orgcode):
 
 
 
+def get_professionCategory_num(orgcode):
+    endpoint = "positions?organizationCode=" + str(orgcode)
+    data = main_request(baseurl, endpoint)
+    departments_count = {}
+
+    for i in range(len(data['data'])):
+        if 'professionCategory' in data['data'][i] and 'jobDescriptionVersionDate' in data['data'][i]:
+            date = data['data'][i]['jobDescriptionVersionDate']
+            if str(date)[:4] == '2023':
+                version = str(data['data'][i]['professionCategory'])
+                if version not in departments_count:
+                    departments_count[version] = 1
+                else:
+                    departments_count[version] += 1
+
+    return str(departments_count)
+
 #1. Να εντοπίσετε τον κωδικό φορέα των Ιδρυμάτων που θα εστιάσετε.
 print("Κωδικός ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ: " + find_org_code('ΑΡΙΣΤΟΤΕΛΕΙΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΘΕΣ/ΝΙΚΗΣ'))
 print("Κωδικός ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ: " + find_org_code('ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ'))
@@ -104,12 +121,10 @@ print("Θέσεις του Πανεπιστημίου Πατρών για το �
 print("Τύποι θέσης: \n" + get_position_type_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
 print("Eργασιακή σχέση: \n" + get_employmentType_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
 print("Κατηγορία εκπαίδευσης: \n" + get_educationType_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
-
-
+print("Κλάδοι: \n" + get_professionCategory_num(find_org_code("ΠΑΝΕΠΙΣΤΗΜΙΟ ΠΑΤΡΩΝ")) + "\n")
 
 
 print('--------------------------------------------------------------------------------------')
-
 
 #4. Ελεύθερο ερώτημα emfanisi monadwn entos twn panepistimiwn
 print("Ελεύθερο ερώτημα εμφάνιση μονάδων εντός των πανεπιστημίων \n")
